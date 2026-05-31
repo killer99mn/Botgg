@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سایت همه کاره</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #999;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .content {
+            display: none;
+            padding: 40px 20px;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            background-color: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success {
+            background-color: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .info-box {
+            background: #f5f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .tab {
+                font-size: 14px;
+            }
+
+            .content {
+                padding: 30px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 سایت همه کاره</h1>
+            <p>وارد شوید یا به عنوان مهمان ادامه دهید</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('admin')">👤 ادمین</div>
+            <div class="tab" onclick="switchTab('guest')">🚪 مهمان</div>
+        </div>
+
+        <!-- Admin Login -->
+        <div id="admin" class="content active">
+            <div class="error" id="admin-error"></div>
+            <div class="success" id="admin-success"></div>
+
+            <div class="info-box">
+                <strong>💡 ورود ادمین:</strong><br>
+                این بخش برای مالک سایت است. شما می‌توانید عکس‌ها و کد‌های Proxy را مدیریت کنید.
+            </div>
+
+            <form onsubmit="adminLogin(event)">
+                <div class="form-group">
+                    <label for="admin-username">📧 نام کاربری</label>
+                    <input type="text" id="admin-username" placeholder="نام کاربری خود را وارد کنید" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="admin-password">🔐 رمز</label>
+                    <input type="password" id="admin-password" placeholder="رمز خود را وارد کنید" required>
+                </div>
+
+                <button type="submit">ورود</button>
+            </form>
+
+            <div class="loading" id="admin-loading">
+                <div class="spinner"></div>
+                <p>در حال ورود...</p>
+            </div>
+        </div>
+
+        <!-- Guest Login -->
+        <div id="guest" class="content">
+            <div class="error" id="guest-error"></div>
+            <div class="success" id="guest-success"></div>
+
+            <div class="info-box">
+                <strong>👋 ورود مهمان:</strong><br>
+                بدون رمز وارد شوید. فقط نام کاربری خود را وارد کنید و شروع کنید!
+            </div>
+
+            <form onsubmit="guestLogin(event)">
+                <div class="form-group">
+                    <label for="guest-username">👤 نام کاربری</label>
+                    <input type="text" id="guest-username" placeholder="نام کاربری موردنظر را انتخاب کنید" required>
+                </div>
+
+                <button type="submit">ورود به عنوان مهمان</button>
+            </form>
+
+            <div class="loading" id="guest-loading">
+                <div class="spinner"></div>
+                <p>در حال ورود...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            // Hide all tabs
+            document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function showError(tabId, message) {
+            const errorEl = document.getElementById(`${tabId}-error`);
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            setTimeout(() => {
+                errorEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(tabId, message) {
+            const successEl = document.getElementById(`${tabId}-success`);
+            successEl.textContent = message;
+            successEl.style.display = 'block';
+        }
+
+        function adminLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            const loading = document.getElementById('admin-loading');
+
+            loading.style.display = 'block';
+
+            fetch('/admin/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = 'none';
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    showError('admin', data.error);
+                }
+            })
+            .catch(error => {
+                loading.style.display = 'none';
+                showError('admin', 'خطا در ورود');
+            });
+        }
+
+        function guestLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('guest-username').value;
+            const loading = document.getElementById('guest-loading');
+
+            loading.style.display = 'block';
+
+            fetch('/guest/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: username
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = 'none';
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    showError('guest', data.error);
+                }
+            })
+            .catch(error => {
+                loading.style.display = 'none';
+                showError('guest', 'خطا در ورود');
+            });
+        }
+    </script>
+</body>
+</html>
